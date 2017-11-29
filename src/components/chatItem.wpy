@@ -1,43 +1,84 @@
-<style lang="less">
-  .panel {
-    width: 100%;
-    margin-top: 20rpx;
-    text-align: left;
-    font-size: 12px;
-    padding-top: 20rpx;
-    padding-left: 50rpx;
-    padding-bottom: 20rpx;
-    border: 1px solid #ccc;
-
-    .title {
-      padding-bottom: 20rpx;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .info {
-      padding: 15rpx;
-    }
-    .testcounter {
-      margin-top: 15rpx;
-      position: absolute;
-    }
-    .counterview {
-      margin-left: 120rpx;
-    }
-  }
-</style>
 <template>
-  <view class="panel">
-    <slot name="title">
-      Title
-    </slot>
-    <slot>
-    </slot>
+  <view wx:if="{{chat.from==='me'}}" class="chat-item from-me">
+    <text class="chat-text">{{chat.text}}</text>
+    <image class="avatar" src="../images/xiaozhi.png"></image>
+  </view>
+  <view wx:else class="chat-item from-robot">
+    <image class="avatar" src="../images/xiaozhi.png"></image>
+    <text v-if="chat.data.code===10000" class="chat-text">{{chat.data.text}}</text>
   </view>
 </template>
 <script>
-  import wepy from 'wepy'
-
-  export default class Panel extends wepy.component {
+import wepy from 'wepy'
+export default class Footer extends wepy.component {
+  props = {
+    chat: Object
   }
+
+  methods = {
+  }
+}
 </script>
+<style lang="less">
+.chat-item {
+  display: inline-flex;
+  .chat-text {
+    position: relative;
+    padding: 16rpx 30rpx;
+    border-radius: 8rpx;
+    word-break: break-word;
+  }
+  .avatar {
+    flex: 0 0 auto;
+    align-self: flex-end;
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+  }
+  & + .chat-item {
+    margin-top: 30rpx;
+  }
+  &.from-me {
+    align-self: flex-end;
+    .avatar {
+      margin-left: 30rpx;
+    }
+    .chat-text {
+      background-color: #1296db;
+      color: #fff;
+      &::after {
+        content: '';
+        position: absolute;
+        right: -12rpx;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-color: transparent transparent #1296db #1296db;
+        border-width: 12rpx;
+      }
+    }
+  }
+  &.from-robot {
+    align-self: flex-start;
+    .avatar {
+      margin-right: 30rpx;
+    }
+    .chat-text {
+      background-color: #d8d8d8;
+      color: #666;
+      &::before {
+        content: '';
+        position: absolute;
+        left: -12rpx;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-color: transparent #d8d8d8 #d8d8d8 transparent;
+        border-width: 12rpx;
+      }
+    }
+  }
+}
+</style>

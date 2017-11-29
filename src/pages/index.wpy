@@ -1,37 +1,54 @@
 <style lang="less">
-
+.container {
+  padding: 20rpx 30rpx;
+}
 </style>
 <template>
   <view class="container">
-    123
+    <repeat for="{{chats}}" key="index" index="index" item="chat">
+      <chatitem :chat="chat"></chatitem>
+    </repeat>
+    <footer></footer>
   </view>
 </template>
 
 <script>
-  import wepy from 'wepy'
+import wepy from 'wepy'
+import chatitem from '../components/chatitem'
+import footer from '../components/footer'
+export default class Index extends wepy.page {
+  components = {
+    chatitem,
+    footer
+  }
 
-  export default class Index extends wepy.page {
-    components = {
-    }
+  data = {
+    userInfo: {
+      nickName: '加载中...'
+    },
+    chats: [{ from: 'me', text: '123' }]
+  }
 
-    data = {
-      userInfo: {
-        nickName: '加载中...'
-      },
-      chats: []
-    }
+  methods = {
+  }
 
-    methods = {
-    }
+  onLoad() {
+    let self = this
+    this.$parent.getUserInfo(function (userInfo) {
+      if (userInfo) {
+        self.userInfo = userInfo
+      }
+      self.$apply()
+    })
+  }
 
-    onLoad() {
-      let self = this
-      this.$parent.getUserInfo(function (userInfo) {
-        if (userInfo) {
-          self.userInfo = userInfo
-        }
-        self.$apply()
-      })
+  events = {
+    received: data => {
+      this.chats.push({ from: 'robot', data, date: new Date() })
+    },
+    sent: text => {
+      this.chats.push({ from: 'me', text, date: new Date() })
     }
   }
+}
 </script>
