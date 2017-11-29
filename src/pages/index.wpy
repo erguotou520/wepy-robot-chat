@@ -1,0 +1,37 @@
+<style lang="less">
+
+</style>
+<template>
+  <view class="container">
+    123
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Index extends wepy.page {
+    components = {
+    }
+
+    data = {
+      userInfo: {
+        nickName: '加载中...'
+      },
+      chats: []
+    }
+
+    methods = {
+    }
+
+    onLoad() {
+      let self = this
+      this.$parent.getUserInfo(function (userInfo) {
+        if (userInfo) {
+          self.userInfo = userInfo
+        }
+        self.$apply()
+      })
+    }
+  }
+</script>
