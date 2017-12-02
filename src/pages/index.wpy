@@ -1,15 +1,29 @@
 <style lang="less">
 .container {
+  display: flex;
+  flex-direction: column;
   padding: 20rpx 30rpx;
+  box-sizing: border-box;
+}
+.tip {
+  display: block;
+  max-width: 480rpx;
+  margin: 32rpx auto;
+  text-align: center;
+  color: #ccc;
+  font-size: 24rpx;
 }
 </style>
 <template>
-  <view class="container">
-    <repeat for="{{chats}}" key="index" index="index" item="chat">
-      <chatitem :chat="chat"></chatitem>
-    </repeat>
+  <scroll-view id="container" scroll-y scroll-with-animation scroll-top="{{scrollTop}}" class="container" style="height:{{scrollerHeight}}">
+    <view id="chats">
+      <text class="tip">你可以给小智聊天、查天气、找图片、看新闻等等。先试着从“你好”开始吧。</text>
+      <repeat for="{{chats}}" key="index" index="index" item="chat">
+        <chatitem :chat="chat" :avatar="userInfo.avatarUrl"></chatitem>
+      </repeat>
+    </view>
     <footer></footer>
-  </view>
+  </scroll-view>
 </template>
 
 <script>
@@ -26,10 +40,19 @@ export default class Index extends wepy.page {
     userInfo: {
       nickName: '加载中...'
     },
-    chats: [{ from: 'me', text: '123' }]
+    chats: [],
+    scrollerHeight: '0',
+    scrollTop: 0,
+    $chats: null
   }
 
-  methods = {
+  scroll () {
+    setTimeout(() => {
+      this.$chats.boundingClientRect(res => {
+        this.scrollTop = res.height
+        this.$apply()
+      }).exec()
+    }, 300)
   }
 
   onLoad() {
@@ -40,14 +63,24 @@ export default class Index extends wepy.page {
       }
       self.$apply()
     })
+    wx.getSystemInfo({
+      success (res) {
+        self.scrollerHeight = (750 * res.windowHeight / res.windowWidth - 88) + 'rpx'
+        self.$apply()
+      }
+    })
+    const query = wx.createSelectorQuery()
+    this.$chats = query.select('#chats')
   }
 
   events = {
     received: data => {
       this.chats.push({ from: 'robot', data, date: new Date() })
+      this.scroll()
     },
     sent: text => {
       this.chats.push({ from: 'me', text, date: new Date() })
+      this.scroll()
     }
   }
 }

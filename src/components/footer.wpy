@@ -1,5 +1,5 @@
 <template>
-  <view class="footer">
+  <view id="footer" class="footer">
     <input class="input" type="text" placeholder="给小智发点啥吧" maxlength="200" focus
       value="{{input}}" confirm-type="send" @input="bindInput"></input>
     <button class="button" type="primary" size="mini" @tap="send">发送</button>
@@ -23,7 +23,7 @@ export default class Footer extends wepy.component {
           url: 'https://www.tuling123.com/openapi/api',
           method: 'POST',
           data: {
-            key: '',
+            key: 'your tuling key',
             userid: '123',
             info: this.input
           },
@@ -51,6 +51,7 @@ export default class Footer extends wepy.component {
   left: 0;
   width: 100%;
   height: 88rpx;
+  background-color: #fff;
   box-shadow: 0 -1rpx 10rpx rgba(0,0,0,.3);
   .input {
     flex: 1;
